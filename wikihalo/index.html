@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wikihalo</title>
+
+	<link rel="icon" type="image/png" href="img/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png"><style>
+        @import url('https://fonts.googleapis.com/css2?family=Genos:wght@100..900&family=Exo:wght@100..900&family=Exo+2:wght@300;400&family=Rajdhani:wght@300;400;500&display=swap');
+        body {
+              margin: 0;
+            background-color: #061851;
+        }
+
+        img{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* Barra centrada y translúcida */
+        .barra {
+            width: calc(100% - 2rem);
+            max-width: 1100px;
+          margin: 2rem auto;
+            padding: 0.5rem 1rem;
+            box-sizing: border-box;
+            background:rgba(18, 30, 75, 0.55);
+			border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius:14px;
+              backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .hamburguesa {
+            display: none;
+            margin-left: auto;
+            padding: 0.4rem 0.8rem;
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius:8px;
+            color: #ffffff;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .menu {
+            display: flex;
+			flex-direction: row;
+            justify-content:space-between;
+            align-items: center;
+            margin: 0;
+            padding:0;
+              list-style:none;
+        }
+
+        .enlace {
+            position:relative;
+            display:block;
+            padding: 1.1rem 0.75rem 1rem;
+            color: #ffffff;
+            font-family:'Exo 2', sans-serif;
+            font-weight: 300;
+            font-size:1.15rem;
+            letter-spacing: 0.04em;
+              text-decoration: none;
+            white-space:nowrap;
+            transition:opacity 0.2s ease-in-out;
+        }
+
+        .enlace:hover { opacity: 0.8; }
+        /* Subrayado del enlace activo */
+        .enlace.activo::after {
+            content:"";
+            position:absolute;
+            left: 0;
+            right: 0;
+          bottom: 0.35rem;
+            height:4px;
+            border-radius:2px;
+            background: #e6e8ee;
+        }
+
+        #parallax-container{ position: relative; height: 80vh; overflow: hidden; }
+
+        .portada {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index:10;
+          display: flex;
+			flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            pointer-events: none;
+        }
+        .superior {
+            display:flex;
+            flex-direction: row;
+            justify-content: center;
+              align-items:center;
+            gap: 40px;
+        }
+
+        .superior .bienvenida {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .superior .bienvenida h2 {
+            color:#FFFFFF;
+            font-family: "Genos", sans-serif;
+            font-weight:600;
+            font-size: 2.2rem;
+            line-height: 1;
+            margin: 0 0 10px 0;
+            white-space: nowrap;
+        }
+        .superior .bienvenida img { width: 320px; margin: 0; }
+
+        .separador {
+            width: 4px;
+          height: 180px;
+          background-color:#d0d0d0;
+        }
+
+        .superior .titulo {
+            display: flex;
+            flex-direction: column;
+            text-align:left;
+        }
+
+        .superior .titulo h2{
+            color: #ffffff;
+            font-family: "Genos", sans-serif;
+            font-weight:600;
+            font-size: 3.2rem;
+            line-height:0.7;
+			margin: 0;
+            white-space: nowrap;
+        }
+        .superior .titulo h1 {
+            font-family: "Genos", sans-serif;
+            font-weight:600;
+            font-size: 4.5rem;
+          line-height: 0.7;
+            margin:0;
+            background:linear-gradient(to bottom, #efefef, #8E9ABD);
+            -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color:transparent;
+        }
+
+        .acceso {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .acceso img { width: 300px; margin: 0; }
+        .boton {
+            pointer-events:auto;
+          display: inline-block;
+            min-width:320px;
+            padding:20px 40px;
+            box-sizing:border-box;
+            background-color: #f2ad42;
+			color: #000000;
+            border-radius: 12px;
+            font-family:"Genos", sans-serif;
+            font-size:1.6rem;
+            font-weight: 600;
+          text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .boton:hover {
+            transform: scale(1.05);
+        }
+        .tinte {
+          position:absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(6, 24, 81, 0.671);
+            z-index:6;
+            pointer-events: none;
+        }
+
+        #layer1 {
+            position: absolute;
+            z-index: 1;
+            background-image: url('img/Capa1.png');
+            top: 0;
+            left: 0;
+              width: 100%;
+            height:100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        #layer2 {
+              position: absolute;
+            z-index:3;
+            inset: -1%;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #layer2 img{ width: 100%; height: 100%; object-fit: contain; }
+
+        #layer3 {
+            z-index: 4;
+            position:absolute;
+            bottom: -210px;
+            left:-15%;
+            width: 160%;
+            display:flex;
+          justify-content: center;
+            align-items:flex-end;
+        }
+        #layer4 {
+            position:absolute;
+            z-index: 5;
+            bottom:-300px;
+            left:0;
+			width:200%;
+            height: 45%;
+        }
+
+        .completo { width: 100%; height: auto; }
+
+        .apartado h2 {
+              text-align: center;
+            color: #efefef;
+          font-family: "Genos", sans-serif;
+            font-size: 2rem;
+        }
+
+        .tarjetas {
+              display:grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1100px;
+            margin: 80px auto;
+            padding:0 20px;
+        }
+
+        .tarjeta {
+            position:relative;
+            min-width: 0;
+            min-height: 340px;
+            padding: 45px 40px;
+              background-color: rgba(6, 24, 81, 0.6);
+          border:2px solid rgba(255, 255, 255, 0.2);
+            border-radius:20px;
+            overflow:hidden;
+            background-size: cover;
+            background-position: center;
+            background-repeat:no-repeat;
+        }
+
+        .cap1 { background-image: url('img/fondocap1.png'); }
+        .cap2 { background-image: url('img/fondocap2.png'); }
+        .cap3 { background-image: url('img/fondocap3.png'); }
+        .cap4 { background-image: url('img/fondocap4.png'); }
+        .cap5 { background-image: url('img/fondocap5.png'); }
+        .cap6 { background-image: url('img/fondocap6.png'); }
+
+        .tarjeta .texto { position: relative; z-index: 2; max-width: 65%; }
+
+        .tarjeta h3 {
+            color: #ffffff;
+            font-family: "Genos", sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+            margin: 0 0 20px 0;
+        }
+
+        .tarjeta p {
+            color: #e6e6e6;
+            font-family:"Rajdhani", sans-serif;
+              font-size: 1.3rem;
+          line-height: 1.5;
+            margin: 0 0 40px 0;
+        }
+        .ver {
+            display: block;
+			width:100%;
+            padding: 18px 0;
+            background-color: #f2ad42;
+			color: #000000;
+            border-radius: 12px;
+            font-family: "Genos", sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align:center;
+            text-decoration:none;
+        }
+
+        .tarjeta img{
+            position:absolute;
+          right: 0;
+          bottom: 0;
+            height: 100%;
+            width: auto;
+            margin: 0;
+            pointer-events: none;
+        }
+        .aviso { max-width: 1100px; margin: 0 auto 80px; padding: 0 20px; }
+
+        .llamado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            padding:35px 40px;
+            background-color: rgba(6, 24, 81, 0.6);
+          background-image:url('img/fondotitulo.png');
+            background-size: cover;
+            background-position: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+
+        .llamado h3 {
+            margin: 0 0 8px 0;
+            color: #ffffff;
+          font-family:"Genos", sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .llamado p {
+          margin:0;
+            color: #E6E6E6;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 1.2rem;
+        }
+        .empezar {
+            box-sizing: border-box;
+              flex-shrink: 0;
+              padding: 16px 32px;
+          background-color:#F2AD42;
+            color: #000000;
+            border-radius:12px;
+            font-family: "Genos", sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s ease-in-out;
+        }
+        .empezar:hover {
+              transform: scale(1.05);
+        }
+
+        footer p {
+            max-width: 900px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+            color: #626f95;
+            font-family:"Exo", sans-serif;
+            font-size: 0.7rem;
+            font-weight: 100;
+            text-align: center;
+        }
+
+        footer .logos { width: 30%; }
+
+        @media (max-width: 800px) {
+            .tarjetas { grid-template-columns: 1fr; }
+
+            .llamado {
+                flex-direction:column;
+                align-items: flex-start;
+                  padding:28px 24px;
+            }
+            .empezar{
+                width: 100%;
+                text-align:center;
+            }
+        }
+
+        @media (max-width: 767px) {
+
+            .hamburguesa { display: block; }
+
+            .menu {
+                display: none;
+                flex-direction:column;
+              align-items: flex-start;
+            }
+            .enlace { padding: 0.75rem 0.5rem; font-size: 1.1rem; }
+
+            #parallax-container {
+                height:90vh;
+            }
+
+            .portada{
+                gap: 24px;
+            }
+
+            .superior {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .superior .bienvenida h2{ font-size: 1.8rem; }
+
+            .superior .bienvenida img{
+                width: 60vw;
+            }
+
+            .separador {
+                width: 50vw;
+              height: 4px;
+            }
+            .superior .titulo { align-items: center; text-align: center; }
+            .superior .titulo h2{ font-size: 2.4rem; }
+
+            .superior .titulo h1 {
+                font-size: 3.4rem;
+            }
+
+            .acceso img {
+                width: 45vw;
+            }
+            .boton {
+                  min-width: 0;
+                padding: 1rem 2.5rem;
+                font-size:1.4rem;
+            }
+            .tarjeta {
+              padding:30px 24px;
+            }
+
+            footer .logos{ width: 70%; }
+        }
+    </style>
+</head>
+  <body>
+
+    <nav class="barra">
+        <button id="abrir" class="hamburguesa" type="button">☰</button>
+
+        <ul id="menu" class="menu">
+            <li><a class="enlace activo" href="index.html">Inicio</a></li>
+              <li><a class="enlace" href="franquicia.html">Franquicia</a></li>
+
+            <li><a class="enlace" href="industria.html">Industria</a></li>
+            <li><a class="enlace" href="medios.html">Medios</a></li>
+            <li><a class="enlace" href="cameos.html">Cameos</a></li>
+            <li><a class="enlace" href="mercancia.html">Mercancía</a></li>
+            <li><a class="enlace" href="musica.html">Música</a></li>
+        </ul>
+
+    </nav>
+	<div id="parallax-container">
+        <div id="layer1"></div>
+
+        <div id="layer2">
+            <img src="img/Capa2.png" alt="El anillo de Halo elevándose hacia el cielo">
+        </div>
+          <div id="layer3">
+              <img class="completo" src="img/Capa3.png" alt="Montañas y estructuras en el horizonte">
+        </div>
+        <div id="layer4">
+            <img class="completo" src="img/Capa4.png" alt="Siluetas de pinos en primer plano">
+        </div>
+      <div class="tinte"></div>
+
+        <div class="portada">
+
+            <div class="superior">
+
+                  <div class="bienvenida">
+                    <h2>BIENVENIDOS A</h2>
+                    <img src="img/LOGO.png" alt="Logo de Halo">
+				</div>
+
+
+                <div class="separador"></div>
+				<div class="titulo">
+                    <h2>LA WIKI</h2>
+                      <h1>OFICIAL</h1>
+                </div>
+            </div>
+
+			<div class="acceso">
+                <img src="img/imgboton.png" alt="Master Chief y Cortana">
+                <a href="#contenidos" class="boton">Ver contenidos</a>
+			</div>
+
+        </div>
+
+    </div>
+    <section id="contenidos">
+        <div class="apartado">
+              <h2>Contenidos</h2>
+        </div>
+
+        <div class="tarjetas">
+
+              <article class="tarjeta cap1">
+                <div class="texto">
+                    <h3>Historia y Franquicia</h3>
+                    <p>Conoce el origen de Halo, su evolución y la historia que convirtió a la saga en un referente.</p>
+                      <a href="franquicia.html" class="ver">Ver</a>
+              </div>
+                <img src="img/master.png" alt="Master Chief">
+            </article>
+
+            <article class="tarjeta cap2">
+                <div class="texto">
+                    <h3>Importancia en la industria</h3>
+                    <p>Descubre cómo Halo marcó una época y dejó su huella en la industria de los videojuegos.</p>
+                    <a href="industria.html" class="ver">Ver</a>
+
+                </div>
+                <img src="img/cortana.png" alt="Cortana">
+            </article>
+            <article class="tarjeta cap3">
+                <div class="texto">
+                    <h3>Halo en otros medios</h3>
+                    <p>Explora cómo el universo de Halo llegó más allá de los videojuegos, incluyendo libros, series y otros formatos.</p>
+                    <a href="medios.html" class="ver">Ver</a>
+              </div>
+                  <img src="img/alien.png" alt="Alien soldado">
+
+            </article>
+            <article class="tarjeta cap4">
+                  <div class="texto">
+                    <h3>Cameos y referencias</h3>
+                    <p>Encuentra los guiños, cameos y referencias de Halo que quizá pasaste por alto.</p>
+                    <a href="cameos.html" class="ver">Ver</a>
+                </div>
+                <img src="img/soldado.png" alt="Soldado">
+            </article>
+
+            <article class="tarjeta cap5">
+                <div class="texto">
+                    <h3>Mercancía</h3>
+                    <p>Conoce los productos, coleccionables y artículos inspirados en el universo de Halo.</p>
+                    <a href="mercancia.html" class="ver">Ver</a>
+                </div>
+
+                <img src="img/alien2.png" alt="Alien soldado pequeño">
+            </article>
+
+            <article class="tarjeta cap6">
+				<div class="texto">
+                    <h3>La música de la saga de Halo</h3>
+                    <p>Sumérgete en las melodías y composiciones que dieron identidad al universo de Halo.</p>
+                    <a href="musica.html" class="ver">Ver</a>
+                </div>
+                <img src="img/disco.png" alt="Disco de música">
+            </article>
+
+          </div>
+
+
+        <div class="aviso">
+            <div class="llamado">
+              <div>
+                  <h3>¿Eres nuevo en la saga?</h3>
+                  <p>Descubre en qué orden jugar para seguir la historia del Jefe Maestro desde el principio.</p>
+                </div>
+              <a href="franquicia.html#guia" class="empezar">Ver línea del tiempo</a>
+            </div>
+		</div>
+
+      </section>
+
+    <footer>
+        <p>El contenido protegido por derechos de autor que pueda aparecer en este sitio, como imágenes, capturas de
+            pantalla, ilustraciones, logotipos, fragmentos audiovisuales o referencias, se utiliza únicamente como
+            material de apoyo, comentario, análisis, crítica, documentación o demostración de los temas tratados. La
+			inclusión de estos materiales no pretende reclamar su propiedad ni transferir ningún derecho sobre ellos.</p>
+
+        <img class="logos" src="img/logos.png" alt="Logos de empresas">
+        <p>© 2026 Halo Fan Site. Todos los derechos reservados. Halo y sus elementos relacionados son propiedad de sus
+            respectivos titulares. Este sitio utiliza cookies para mejorar la experiencia de navegación y analizar el
+            uso del sitio.</p>
+    </footer>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const boton = document.getElementById('abrir');
+          const menu = document.getElementById("menu");
+            boton.addEventListener("click", function(){
+              if(menu.style.display === 'flex') {
+                    menu.style.display = '';
+                    boton.textContent = '☰';
+                  } else {
+                    menu.style.display = "flex";
+                    boton.textContent = '✕';
+                }
+            });
+
+            const layer1 = document.getElementById('layer1');
+            const layer2 = document.getElementById('layer2');
+            const layer3 = document.getElementById('layer3');
+            const layer4 = document.getElementById('layer4');
+			const container = document.getElementById('parallax-container');
+
+            const speed1 = 0.0;
+            const speed2 = 0.1;
+            const speed3 = 0.3;
+              const speed4 = 0.5;
+            function updateParallax() {
+                const scrollOffset = container.getBoundingClientRect().top;
+
+                // Multiplicamos el desplazamiento por la velocidad de cada capa
+                layer1.style.transform = `translate3d(0, ${scrollOffset * speed1}px, 0)`;
+                layer2.style.transform = `translate3d(0, ${scrollOffset * speed2}px, 0)`;
+                layer3.style.transform = `translate3d(0, ${scrollOffset * speed3}px, 0)`;
+                layer4.style.transform = `translate3d(0, ${scrollOffset * speed4}px, 0)`;
+            }
+
+            window.addEventListener('scroll', updateParallax);
+            updateParallax();
+        });
+    </script>
+</body>
+
+  </html>
